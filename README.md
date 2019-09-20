@@ -414,5 +414,6 @@ For this task our goal was reched, short recap what we done:
 
 * Learned how DQN works
 * Wrote simple DQN model
-* Teched model to play almost TartPole game
+* Teched model to play CartPole game
+
 This is the end for this tutorial. I challenge you to try creating your own RL agents! Let me know how they perform in solving the cartpole problem. Furthermore, stay tuned for more future tutorials.
