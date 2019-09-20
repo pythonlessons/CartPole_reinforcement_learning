@@ -81,3 +81,55 @@ def Random_games():
                 
 Random_games()
 ```
+
+# Learn with Simple Neural Network using Keras
+This tutorial is not about deep learning or neural networks. So I will not explain how it works in details, I'll consider it just as a black box algorithm that approximately maps inputs to outputs. This is basically an NN algorithm that learns on the pairs of examples input and output data, detects some kind of patterns, and predicts the output based on an unseen input data.
+
+Neural networks are not the focus of this tutorial, but we should understand how it is used to learn in deep Q-learning algorithm.
+
+Keras makes it really simple to implement a basic neural network. With code below we will create an empty NN model. activation, loss and optimizer are the parameters that define the characteristics of the neural network, but we are not going to discuss it here.
+
+```
+from keras.models import  Model
+from keras.layers import Input, Dense, Dropout
+from keras.optimizers import Adam
+
+# Neural Network model for Deep Q Learning
+def OurModel(input_shape, action_space):
+    X_input = Input(input_shape)
+    X = X_input
+
+    # 'Dense' is the basic form of a neural network layer
+    # Input Layer of state size(4) and Hidden Layer with 512 nodes
+    X = Dense(512, input_shape=input_shape, activation="relu")(X)
+    X = Dropout(0.5)(X)
+    
+    # Hidden layer with 256 nodes
+    X = Dense(256, activation="relu")(X)
+    X = Dropout(0.5)(X)
+    
+    # Hidden layer with 64 nodes
+    X = Dense(64, activation="relu")(X)
+    X = Dropout(0.5)(X)
+    
+    # Output Layer with # of actions: 2 nodes (left, right)
+    X = Dense(action_space, activation="linear")(X)
+
+    model = Model(inputs = X_input, outputs = X, name='CartPole model')
+    model.compile(loss='mse', optimizer=Adam())
+    
+    return model
+```
+For a NN to understand and predict based on the environment data, we have initialized our model (will show it in original code) and feed it the information. Later in full code you will see, that fit() method feeds input and output pairs to the model. Then the model will train on those data to approximate the output based on the input.
+
+In above model, I used 3 layers neural network, 512, 256 and 64 neurons. With every layer I added dropout layer, later when we will be training our model, you will see that when training DQN it performs worse than in test mode, this is because of dropout layer. But our goal is to make perfect model on test mode, so everything is fine! Feel free to play with its structure and parameters.
+
+Later in training process you will see what makes the NN to predict the reward value from a certain state. You will see that in code I will use ```model.fit(next_state, reward)```, same as in standard Keras NN model.
+
+After training, the model we will be able to predict the output from unseen input. When we call ```predict()``` function on the model, the model will predict the reward of current state based on the data we trained. Like so: ```prediction = model.predict(next_state)```
+
+
+# Implementing Deep Q Network (DQN)
+Normally in games, the reward directly relates to the score of the game. But, imagine a situation where the pole from CartPole game is tilted to the left. The expected future reward of pushing left button will then be higher than that of pushing the right button since it could yield higher score of the game as the pole survives longer.
+
+In order to logically represent this intuition and train it, we need to express this as a formula that we can optimize on. The loss is just a value that indicates how far our prediction is from the actual target. For example, the prediction of the model could indicate that it sees more value in pushing the left button when in fact it can gain more reward by pushing the right button. We want to decrease this gap between the prediction and the target (loss). So, we will define our loss function as follows:
