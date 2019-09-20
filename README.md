@@ -136,3 +136,26 @@ In order to logically represent this intuition and train it, we need to express 
 <p align="center">
     <img src="https://github.com/pythonlessons/CartPole_reinforcement_learning/blob/master/IMAGES/math.PNG"
 </p>
+We first carry out an action a and observe the reward r and resulting new state s. Based on the result, we calculate the maximum target Q and then discount it so that the future reward is worth less than immediate reward. Lastly, we add the current reward to the discounted future reward to get the target value. Subtracting our current prediction from the target gives the loss. Squaring this value allows us to punish the large loss value more and treat the negative values same as the positive values.
+
+But it's not that difficult than you think it is, Keras takes care of most of the difficult tasks for us. We just need to define our target. We can express the target in a magical one line of code in python: 
+```target = reward + gamma * np.max(model.predict(next_state))```
+
+Keras does all the work of subtracting the target from NN output and squaring it. It also applies the learning rate that we can define when creating the neural network model (otherwise model will define it by itself). This all happens inside the fit() function. This function decreases the gap between our prediction to target by the learning rate. The approximation of the Q-value converges to the true Q-value as we repeat the updating process. The loss will decrease, and score will grow higher.
+
+The most notable features of the DQN algorithm are remember and replay methods. Both are simple concepts. The original DQN architecture contains a several more tweaks for better training, but we are going to stick to a simpler version for better understanding.
+
+
+# Implementing Remember function
+One of the specific things for DQN is that neural network used in the algorithm tends to forget the previous experiences as it overwrites them with new experiences. Experience replay is a biologically inspired process that uniformly (to reduce correlation between subsequent actions) samples experiences from the memory and for each entry updates its Q value. So, we need a memory (list) of previous experiences and observations to re-train the model with the previous experiences. We will call this array of experiences memory and use remember() function to append state, action, reward, and next state to the memory.
+
+In our example, the memory list will have a form of:
+```memory = [(state, action, reward, next_state, done)...]```
+
+And remember function will simply store states, actions and resulting rewards to the memory like:
+```
+def remember(self, state, action, reward, next_state, done):
+    self.memory.append((state, action, reward, next_state, done))
+```
+
+done is just a Boolean that indicates if the state is the final state (cartpole failed).
