@@ -410,7 +410,7 @@ And here is short gif, which shows how our agent performs:
     <img src="https://github.com/pythonlessons/CartPole_reinforcement_learning/blob/master/IMAGES/CartPole_test.gif"
 </p>
     
-For this task our goal was reched, short recap what we done:
+For this task our goal was reached, short recap what we done:
 
 * Learned how DQN works
 * Wrote simple DQN model
