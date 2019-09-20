@@ -164,3 +164,39 @@ def remember(self, state, action, reward, next_state, done):
 ```
 
 done is just a Boolean that indicates if the state is the final state (cartpole failed).
+
+
+# Implementing Replay function
+A method that trains NN with experiences in the memory we will call ```replay()``` function. First, we will sample some experiences from the memory and call them minibath. ```minibatch = random.sample(memory, min(len(memory), batch_size))```
+
+The above code will make a minibatch, which is just a randomly sampled elements from full memories of size ```batch_size```. I will set the batch size as 64 for this example. If memory size is less than 64, we will take everything is in our memory.
+
+To make the agent perform well in long-term, we need to consider not only the immediate rewards but also the future rewards we are going to get. In order to do this, we are going to have a ```discount rate``` or ```gamma``` and ultimately adding it to the current state reward. This way the agent will learn to maximize the discounted future reward based on the given state. In other words, we are updating our Q value with the cumulative discounted future rewards.
+
+For those of you who wonder how such function can possibly converge, as it looks like it is trying to predict its own output (in some sense it is), don’t worry - it’s possible and in our simple case it does. However, convergence is not always that 'easy' and in more complex problems there comes a need of more advanced techniques than CartPole stabilize training. These techniques are for example Double DQN’s or Dueling DQN’s, but that’s a topic for another article (stay tuned).
+
+```
+def replay(self):
+    x_batch, y_batch = [], []
+    # Randomly sample minibatch from the memory
+    minibatch = random.sample(self.memory, min(len(self.memory), self.batch_size))
+    # Extract informations from each memory
+    for state, action, reward, next_state, done in minibatch:
+        # make the agent to approximately map the current state to future discounted reward
+        # We'll call that y_target
+        y_target = self.model.predict(state)
+        # if done, make our target reward
+        if done:
+            y_target[0][action] = reward
+        else:
+            # predict the future discounted reward
+            y_target[0][action] = reward + self.gamma * np.max(self.model.predict(next_state)[0])
+        # append results to lists, that will be used for training
+        x_batch.append(state[0])
+        y_batch.append(y_target[0])
+        
+    # Train the Neural Network with batches
+    self.model.fit(np.array(x_batch), np.array(y_batch), batch_size=len(x_batch), verbose=0)
+    if self.epsilon > self.epsilon_min:
+        self.epsilon *= self.epsilon_decay
+```
