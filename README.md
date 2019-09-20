@@ -133,3 +133,6 @@ After training, the model we will be able to predict the output from unseen inpu
 Normally in games, the reward directly relates to the score of the game. But, imagine a situation where the pole from CartPole game is tilted to the left. The expected future reward of pushing left button will then be higher than that of pushing the right button since it could yield higher score of the game as the pole survives longer.
 
 In order to logically represent this intuition and train it, we need to express this as a formula that we can optimize on. The loss is just a value that indicates how far our prediction is from the actual target. For example, the prediction of the model could indicate that it sees more value in pushing the left button when in fact it can gain more reward by pushing the right button. We want to decrease this gap between the prediction and the target (loss). So, we will define our loss function as follows:
+<p align="center">
+    <img src="https://github.com/pythonlessons/CartPole_reinforcement_learning/blob/master/IMAGES/math.PNG"
+</p>
