@@ -35,7 +35,7 @@ Gym makes interacting with the game environment really simple:
 next_state, reward, done, info = env.step(action)
 ```
 
-Here, ```action``` can be either 0 or 1. If we pass those numbers, env, which represents the game environment, will emit the results. ```done``` is a boolean value telling whether the game ended or not. ```next_state``` space handles all possible state values:
+Here, ```action``` can be either 0 or 1. If we pass those numbers, env, which represents the game environment, will emit the results. ```done``` is a boolean value telling whether the game ended or not. ```next_state``` space handles all possible state values:<br>
 (<br>
 [Cart Position from -4.8 to 4.8],<br>
 [Cart Velocity from -Inf to Inf],<br>
