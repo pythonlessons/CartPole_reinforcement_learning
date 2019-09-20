@@ -36,13 +36,13 @@ next_state, reward, done, info = env.step(action)
 ```
 
 Here, ```action``` can be either 0 or 1. If we pass those numbers, env, which represents the game environment, will emit the results. ```done``` is a boolean value telling whether the game ended or not. ```next_state``` space handles all possible state values:
-(
-[Cart Position from -4.8 to 4.8],
-[Cart Velocity from -Inf to Inf],
-[Pole Angle from -24° to 24°],
-[Pole Velocity At Tip from -Inf to Inf]
+(<br>
+[Cart Position from -4.8 to 4.8],<br>
+[Cart Velocity from -Inf to Inf],<br>
+[Pole Angle from -24° to 24°],<br>
+[Pole Velocity At Tip from -Inf to Inf]<br>
 )
 
-The old state information paired with action, next_state and reward is the information we need for training the agent.
+The old state information paired with ```action```, ```next_state``` and ```reward``` is the information we need for training the agent.
 
 So to understand everything from basics, lets first create CartPole environment where our python script would play with it randomly:
